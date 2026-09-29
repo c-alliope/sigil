@@ -1,0 +1,50 @@
+---
+// LineField — cold technical line composition. Stand-in backdrop until
+// real PNGs land in public/bg/ (drop hero.png, swap the <img> in).
+interface Props {
+  dark?: boolean;
+  seed?: number;
+}
+const { dark = false, seed = 7 } = Astro.props;
+
+function mulberry(s: number) {
+  let a = s >>> 0;
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const rng = mulberry(seed);
+const lines = Array.from({ length: 26 }, () => ({
+  x1: rng() * 800, y1: rng() * 400, x2: rng() * 800, y2: rng() * 400,
+  w: rng() < 0.85 ? 1 : 3, o: 0.25 + rng() * 0.55,
+}));
+const bars = Array.from({ length: 10 }, () => ({
+  x: rng() * 760, y: rng() * 360, w: 8 + rng() * 60, h: 3 + rng() * 14, o: 0.2 + rng() * 0.5,
+}));
+const rings = [
+  { cx: 640, cy: 120, r: 90 },
+  { cx: 120, cy: 300, r: 55 },
+];
+const ink = dark ? '#8fa3ad' : '#5c6f79';
+---
+
+<svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 h-full w-full" aria-hidden="true">
+  {lines.map((l) => (
+    <line x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={ink} stroke-width={l.w} opacity={l.o} />
+  ))}
+  {bars.map((b) => (
+    <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={ink} opacity={b.o} />
+  ))}
+  {rings.map((r) => (
+    <g fill="none" stroke={ink} opacity="0.5">
+      <circle cx={r.cx} cy={r.cy} r={r.r} stroke-width="1" />
+      <circle cx={r.cx} cy={r.cy} r={r.r * 0.7} stroke-width="1" stroke-dasharray="4 6" />
+    </g>
+  ))}
+  <circle cx={400} cy={90} r={4} fill="#e0263c" />
+  <circle cx={400} cy={90} r={10} fill="none" stroke="#e0263c" stroke-width="1" opacity="0.6" />
+</svg>

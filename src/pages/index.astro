@@ -1,0 +1,271 @@
+---
+import SigilBase from '../layouts/SigilBase.astro';
+import LineField from '../components/LineField.astro';
+
+const swatches = [
+  { n: 'abyss', h: '#04070b', r: 'void bg' },
+  { n: 'panel', h: '#0a1016', r: 'surfaces' },
+  { n: 'ice', h: '#e8f1f4', r: 'primary ink' },
+  { n: 'steel', h: '#8fa3ad', r: 'secondary' },
+  { n: 'dim', h: '#54636d', r: 'hud text' },
+  { n: 'sigred', h: '#e0263c', r: 'signal only' },
+  { n: 'sigdeep', h: '#7a0f1e', r: 'signal deep' },
+  { n: 'paper', h: '#e9edee', r: 'light hero' },
+];
+---
+
+<SigilBase>
+  <!-- HERO — light, technical (swap LineField for public/bg/hero.png when ready) -->
+  <section class="relative overflow-hidden bg-paper text-ink">
+    <LineField seed={11} />
+    <div class="relative mx-auto max-w-6xl px-4 md:px-8 pt-28 md:pt-36 pb-14">
+      <div class="flex items-start justify-between text-[10px] font-mono2 uppercase tracking-[0.2em] text-ink/50">
+        <span>y2k. — occult systems</span>
+        <span class="text-right">tribal. — v0.1</span>
+      </div>
+      <div data-zoom class="mt-10 will-change-transform">
+        <h1 class="font-grot font-bold lowercase leading-[0.85] tracking-tight text-[22vw] md:text-[11rem]">sigil<span class="text-sigred">.</span></h1>
+        <p class="pix mt-4 text-xl md:text-2xl text-ink/70">cyber-sigilism ui kit</p>
+      </div>
+      <p class="mt-6 max-w-xl text-sm md:text-base leading-relaxed text-ink/65">
+        If a medieval alchemist and a 2000s hacker designed a component library together.
+        Cold, technical, precise — every piece below is live. Click anything boxed to zoom it.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#tokens" data-scroll class="bg-ink px-6 py-3 text-sm font-bold tracking-wide text-paper hover:bg-sigred hover:text-white transition-colors">enter tokens ↓</a>
+        <a href="https://github.com/c-alliope/sigil" target="_blank" rel="noreferrer" class="border border-ink/25 px-6 py-3 text-sm font-bold tracking-wide hover:border-sigred hover:text-sigred transition-colors">repo ↗</a>
+      </div>
+      <p class="hud mt-12 text-ink/40">scroll — the page zooms as you go</p>
+    </div>
+  </section>
+
+  <!-- marquee -->
+  <div class="overflow-hidden border-y border-ice/10 bg-sigred py-2.5">
+    <div class="marq">
+      {[0, 1].map(() => (
+        <span class="pix whitespace-nowrap text-lg text-white">cybersigilism — cold + technical — medieval alchemist × 2000s hacker —&nbsp;</span>
+      ))}
+    </div>
+  </div>
+
+  <!-- 01 TOKENS -->
+  <section id="tokens" class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+    <p class="hud text-sigred rv">01 // tokens — click a swatch to copy</p>
+    <h2 class="rv mt-4 font-grot text-3xl md:text-5xl font-bold tracking-tight">one ramp. signal red only.</h2>
+    <div id="swatches" class="rv mt-10 grid grid-cols-2 md:grid-cols-4 border-t border-l border-ice/15">
+      {swatches.map((s) => (
+        <button data-hex={s.h} class="swatch group border-b border-r border-ice/15 p-0 text-left hover:border-sigred transition-colors">
+          <span class="block h-20" style={`background:${s.h}`}></span>
+          <span class="block px-4 py-3">
+            <span class="hud block">{s.n}</span>
+            <span class="hud mt-1 block text-dim">{s.h} · {s.r}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+    <div class="rv mt-10 grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="border border-ice/15 bg-panel p-6">
+        <p class="hud text-dim">display — grotesk 700</p>
+        <p class="mt-3 font-grot text-4xl font-bold lowercase">shattered glass</p>
+      </div>
+      <div class="border border-ice/15 bg-panel p-6">
+        <p class="hud text-dim">hud — pixel</p>
+        <p class="pix mt-3 text-3xl">bleeding light</p>
+      </div>
+      <div class="border border-ice/15 bg-panel p-6">
+        <p class="hud text-dim">data — mono</p>
+        <p class="mt-3 font-mono2 text-sm leading-relaxed">sts ■ wsp.stack<br />def none · datanet offline</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 BUTTONS -->
+  <section id="buttons" class="border-t border-ice/10 bg-panel/40">
+    <div class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+      <p class="hud text-sigred rv">02 // buttons — live playground</p>
+      <h2 class="rv mt-4 font-grot text-3xl md:text-5xl font-bold tracking-tight">push them.</h2>
+      <div class="rv mt-10 border border-ice/15 bg-abyss p-6 md:p-8">
+        <div class="flex flex-wrap gap-6">
+          <div>
+            <p class="hud text-dim mb-3">variant</p>
+            <div id="pg-variant" class="flex flex-wrap gap-2">
+              <button data-v="solid" class="hud border px-3 py-1.5 border-sigred text-sigred">solid</button>
+              <button data-v="ghost" class="hud border px-3 py-1.5 border-ice/20 text-dim hover:text-ice">ghost</button>
+              <button data-v="ice" class="hud border px-3 py-1.5 border-ice/20 text-dim hover:text-ice">ice</button>
+              <button data-v="line" class="hud border px-3 py-1.5 border-ice/20 text-dim hover:text-ice">line</button>
+            </div>
+          </div>
+          <div>
+            <p class="hud text-dim mb-3">size</p>
+            <div id="pg-size" class="flex flex-wrap gap-2">
+              <button data-s="sm" class="hud border px-3 py-1.5 border-ice/20 text-dim hover:text-ice">sm</button>
+              <button data-s="md" class="hud border px-3 py-1.5 border-sigred text-sigred">md</button>
+              <button data-s="lg" class="hud border px-3 py-1.5 border-ice/20 text-dim hover:text-ice">lg</button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 border border-ice/10 bg-panel p-10 grid place-items-center min-h-[140px]">
+          <button id="pg-preview">enter</button>
+        </div>
+        <div class="mt-4 flex items-start justify-between gap-3">
+          <pre id="pg-code" class="font-mono2 text-xs leading-relaxed text-steel overflow-x-auto"></pre>
+          <button id="pg-copy" class="hud shrink-0 border border-ice/20 px-3 py-1.5 hover:border-sigred hover:text-sigred transition-colors">copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 INPUTS -->
+  <section id="inputs" class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+    <p class="hud text-sigred rv">03 // inputs — all working</p>
+    <h2 class="rv mt-4 font-grot text-3xl md:text-5xl font-bold tracking-tight">cold controls.</h2>
+    <div class="rv mt-10 grid grid-cols-1 md:grid-cols-2 border-t border-l border-ice/15">
+      <div class="border-b border-r border-ice/15 p-6">
+        <p class="hud text-dim mb-4">text</p>
+        <label class="hud block mb-2 text-steel" for="sg-name">designation</label>
+        <input id="sg-name" type="text" placeholder="unit-07" class="w-full bg-panel border border-ice/20 px-4 py-3 text-sm text-ice placeholder:text-dim/60 outline-none focus:border-sigred transition-colors" />
+      </div>
+      <div class="border-b border-r border-ice/15 p-6">
+        <p class="hud text-dim mb-4">toggle</p>
+        <label class="inline-flex cursor-pointer items-center gap-3">
+          <input type="checkbox" id="sg-toggle" class="peer sr-only" checked />
+          <span class="relative h-6 w-11 border border-ice/25 bg-panel transition peer-checked:border-sigred peer-checked:bg-sigdeep after:absolute after:top-0.5 after:left-0.5 after:h-[18px] after:w-[18px] after:bg-steel after:transition peer-checked:after:translate-x-5 peer-checked:after:bg-white"></span>
+          <span id="sg-toggle-label" class="text-sm text-steel">online</span>
+        </label>
+      </div>
+      <div class="border-b border-r border-ice/15 p-6">
+        <p class="hud text-dim mb-4">checks</p>
+        <label class="flex items-center gap-3 text-sm text-steel cursor-pointer">
+          <input type="checkbox" checked class="peer sr-only" />
+          <span class="grid h-5 w-5 place-items-center border border-ice/30 text-transparent peer-checked:border-sigred peer-checked:bg-sigred peer-checked:text-white transition text-xs">✓</span>
+          bleeding light
+        </label>
+      </div>
+      <div class="border-b border-r border-ice/15 p-6">
+        <p class="hud text-dim mb-4">range — <span id="sg-range-v">40</span></p>
+        <input id="sg-range" type="range" min="0" max="100" value="40" class="w-full accent-[#e0263c]" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 SURFACES — zoomable -->
+  <section id="surfaces" class="border-t border-ice/10 bg-panel/40">
+    <div class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+      <p class="hud text-sigred rv">04 // surfaces — click any card to zoom + pan</p>
+      <h2 class="rv mt-4 font-grot text-3xl md:text-5xl font-bold tracking-tight">glass + chrome.</h2>
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="rv border border-ice/15 bg-abyss p-6 min-h-[260px] flex flex-col justify-between" data-zoomable>
+          <p class="hud text-dim">chrome specimen</p>
+          <p class="chrome-text font-grot font-bold lowercase leading-none" style="font-size: 4.5rem;">sigil</p>
+          <p class="hud text-sigred">click to zoom →</p>
+        </div>
+        <div class="rv relative border border-ice/15 min-h-[260px] overflow-hidden" data-zoomable>
+          <LineField dark seed={23} />
+          <div class="absolute inset-0 p-6 flex flex-col justify-between">
+            <p class="hud text-dim">linefield specimen</p>
+            <p class="pix text-2xl">▓▒░ 84</p>
+            <p class="hud text-sigred">click to zoom →</p>
+          </div>
+        </div>
+        <div class="rv tech-grid border border-ice/15 bg-panel p-6 min-h-[260px] flex flex-col justify-between" data-zoomable>
+          <p class="hud text-dim">grid specimen</p>
+          <div class="flex gap-2">
+            <span class="h-10 w-10 bg-sigred"></span>
+            <span class="h-10 w-10 border border-ice/30"></span>
+            <span class="h-10 w-10 bg-steel"></span>
+          </div>
+          <p class="hud text-sigred">click to zoom →</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 MOTION -->
+  <section id="motion" class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+    <p class="hud text-sigred rv">05 // motion — this block zooms with your scroll</p>
+    <div data-zoom class="rv mt-8 border border-sigred/50 bg-panel p-10 md:p-16 text-center will-change-transform">
+      <p class="pix text-3xl md:text-5xl">keep scrolling</p>
+      <p class="hud mt-4 text-dim">scale 0.82 → 1.15 across the viewport</p>
+    </div>
+  </section>
+
+  <!-- 06 INSTALL -->
+  <section class="border-t border-ice/10 bg-panel/40">
+    <div class="mx-auto max-w-6xl px-4 md:px-8 py-16 md:py-24">
+      <p class="hud text-sigred rv">06 // install</p>
+      <h2 class="rv mt-4 font-grot text-3xl md:text-5xl font-bold tracking-tight">take it.</h2>
+      <pre class="rv mt-8 border border-ice/15 bg-abyss p-6 font-mono2 text-xs md:text-sm leading-relaxed text-steel overflow-x-auto"><code>git clone https://github.com/c-alliope/sigil.git
+cd sigil && npm install && npm run dev</code></pre>
+      <p class="rv mt-4 text-sm text-dim">npm package is phase 2 — today you copy tokens + components straight from the source.</p>
+      <a href="https://github.com/c-alliope/sigil" target="_blank" rel="noreferrer" class="rv mt-6 inline-block bg-sigred px-6 py-3 text-sm font-bold tracking-wide text-white hover:bg-[#a31226] transition-colors">open repo ↗</a>
+    </div>
+  </section>
+
+  <script>
+    // swatch copy
+    document.querySelectorAll('.swatch').forEach((b) => {
+      b.addEventListener('click', async () => {
+        const hex = (b as HTMLElement).dataset.hex || '';
+        try { await navigator.clipboard.writeText(hex); } catch {}
+        const label = b.querySelectorAll('.hud')[1] as HTMLElement;
+        const old = label.textContent;
+        label.textContent = 'copied ✓';
+        setTimeout(() => { label.textContent = old; }, 1100);
+      });
+    });
+
+    // button playground
+    const V: Record<string, string> = {
+      solid: 'bg-sigred text-white hover:bg-[#a31226]',
+      ghost: 'text-steel hover:text-ice hover:bg-panel2',
+      ice: 'bg-ice text-ink hover:bg-white',
+      line: 'border border-ice/30 text-ice hover:border-sigred hover:text-sigred',
+    };
+    const S: Record<string, string> = {
+      sm: 'px-3 py-1.5 text-xs', md: 'px-6 py-3 text-sm', lg: 'px-8 py-4 text-base',
+    };
+    let pv = 'solid', ps = 'md';
+    const prev = document.getElementById('pg-preview') as HTMLButtonElement;
+    const code = document.getElementById('pg-code')!;
+    function paintPg() {
+      prev.className = `${V[pv]} ${S[ps]} font-bold tracking-wide transition`;
+      code.textContent = `<button class="${V[pv]} ${S[ps]} font-bold">enter</button>`;
+      document.querySelectorAll('#pg-variant button').forEach((b) => {
+        const on = (b as HTMLElement).dataset.v === pv;
+        b.className = `hud border px-3 py-1.5 ${on ? 'border-sigred text-sigred' : 'border-ice/20 text-dim hover:text-ice'}`;
+      });
+      document.querySelectorAll('#pg-size button').forEach((b) => {
+        const on = (b as HTMLElement).dataset.s === ps;
+        b.className = `hud border px-3 py-1.5 ${on ? 'border-sigred text-sigred' : 'border-ice/20 text-dim hover:text-ice'}`;
+      });
+    }
+    document.getElementById('pg-variant')?.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button');
+      if (!b) return;
+      pv = (b as HTMLElement).dataset.v || pv;
+      paintPg();
+    });
+    document.getElementById('pg-size')?.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button');
+      if (!b) return;
+      ps = (b as HTMLElement).dataset.s || ps;
+      paintPg();
+    });
+    document.getElementById('pg-copy')?.addEventListener('click', async (e) => {
+      try { await navigator.clipboard.writeText(code.textContent || ''); } catch {}
+      const b = e.target as HTMLElement;
+      const old = b.textContent;
+      b.textContent = 'copied ✓';
+      setTimeout(() => { b.textContent = old; }, 1100);
+    });
+    paintPg();
+
+    // inputs demo
+    const tgl = document.getElementById('sg-toggle') as HTMLInputElement | null;
+    const tglL = document.getElementById('sg-toggle-label');
+    tgl?.addEventListener('change', () => { if (tglL) tglL.textContent = tgl.checked ? 'online' : 'offline'; });
+    const rng = document.getElementById('sg-range') as HTMLInputElement | null;
+    const rngV = document.getElementById('sg-range-v');
+    rng?.addEventListener('input', () => { if (rngV) rngV.textContent = rng.value; });
+  </script>
+</SigilBase>

@@ -1,0 +1,165 @@
+---
+import '../styles/tokens.css';
+
+interface Props {
+  title?: string;
+}
+const { title = 'sigil — cyber-sigilism ui kit' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="sigil — a cold, technical ui kit. cybersigilism components, tokens, motion." />
+    <link rel="icon" type="image/svg+xml" href="/sigil/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DotGothic16&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-abyss text-ice antialiased">
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-ice/10 bg-abyss/80 backdrop-blur-md">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8">
+        <a href="#top" data-scroll class="pix text-lg text-ice">sigil<span class="text-sigred">.</span></a>
+        <nav class="hidden md:flex items-center gap-7">
+          <a href="#tokens" data-scroll class="hud text-dim hover:text-ice transition-colors">tokens</a>
+          <a href="#buttons" data-scroll class="hud text-dim hover:text-ice transition-colors">buttons</a>
+          <a href="#inputs" data-scroll class="hud text-dim hover:text-ice transition-colors">inputs</a>
+          <a href="#surfaces" data-scroll class="hud text-dim hover:text-ice transition-colors">surfaces</a>
+          <a href="#motion" data-scroll class="hud text-dim hover:text-ice transition-colors">motion</a>
+        </nav>
+        <a href="https://github.com/c-alliope/sigil" target="_blank" rel="noreferrer" class="hud border border-ice/20 px-3 py-1.5 hover:border-sigred hover:text-sigred transition-colors">repo ↗</a>
+      </div>
+    </header>
+
+    <main id="top" class="relative z-10">
+      <slot />
+    </main>
+
+    <footer class="relative z-10 border-t border-ice/10 mt-8">
+      <div class="mx-auto max-w-6xl px-4 md:px-8 py-10 flex flex-col md:flex-row justify-between gap-6">
+        <div>
+          <p class="pix text-2xl">sigil<span class="text-sigred">.</span></p>
+          <p class="hud mt-2 text-dim">cold + technical — v0.1</p>
+        </div>
+        <div class="flex gap-6 items-end">
+          <a href="https://github.com/c-alliope/sigil" target="_blank" rel="noreferrer" class="hud text-dim hover:text-sigred transition-colors">github ↗</a>
+          <a href="https://c-alliope.github.io" target="_blank" rel="noreferrer" class="hud text-dim hover:text-sigred transition-colors">cal.dev ↗</a>
+        </div>
+      </div>
+      <p class="hud pb-6 text-center text-dim/70">© 2026 sigil — medieval alchemist × 2000s hacker</p>
+    </footer>
+
+    <!-- zoom veil: specimens move here on click -->
+    <div id="zoom-veil" role="dialog" aria-label="zoomed specimen">
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-4">
+        <span class="hud text-dim">scroll to zoom · drag to pan · esc to close</span>
+      </div>
+      <div id="zoom-stage"><div id="zoom-inner"></div></div>
+    </div>
+
+    <script>
+      import Lenis from 'lenis';
+
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let lenis: any = null;
+      if (!reduced) {
+        lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+        (function raf(time: number) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        })(0);
+      }
+
+      // anchor scrolling (lenis-aware)
+      document.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement).closest('a[data-scroll]') as HTMLAnchorElement | null;
+        if (!a) return;
+        const id = a.getAttribute('href');
+        if (!id || !id.startsWith('#')) return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        if (lenis) lenis.scrollTo(el as HTMLElement, { offset: -60 });
+        else (el as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // scroll reveal
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) { (en.target as HTMLElement).classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+      // scroll-driven zoom: [data-zoom] scales as it crosses the viewport
+      const zoomers = Array.from(document.querySelectorAll('[data-zoom]')) as HTMLElement[];
+      function zoomTick() {
+        const h = innerHeight;
+        zoomers.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          const p = Math.max(0, Math.min(1, 1 - r.top / h));
+          const s = 0.82 + p * 0.33;
+          el.style.transform = `scale(${s.toFixed(3)})`;
+        });
+        requestAnimationFrame(zoomTick);
+      }
+      if (!reduced && zoomers.length) requestAnimationFrame(zoomTick);
+
+      // specimen zoom modal: moves the live node in, wheel zooms, drag pans
+      const veil = document.getElementById('zoom-veil')!;
+      const stage = document.getElementById('zoom-stage')!;
+      const inner = document.getElementById('zoom-inner')!;
+      let home: HTMLElement | null = null;
+      let node: HTMLElement | null = null;
+      let scale = 1, tx = 0, ty = 0;
+
+      function applyZoom() {
+        inner.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      }
+      function openZoom(el: HTMLElement) {
+        home = el.parentElement as HTMLElement;
+        node = el;
+        inner.appendChild(el);
+        scale = 1; tx = 0; ty = 0;
+        applyZoom();
+        veil.classList.add('open');
+        if (lenis) lenis.stop();
+      }
+      function closeZoom() {
+        if (node && home) home.appendChild(node);
+        node = null; home = null;
+        veil.classList.remove('open');
+        if (lenis) lenis.start();
+      }
+      document.addEventListener('click', (e) => {
+        const z = (e.target as HTMLElement).closest('[data-zoomable]') as HTMLElement | null;
+        if (z && !veil.classList.contains('open')) { openZoom(z); return; }
+        if (veil.classList.contains('open') && (e.target === veil || (e.target as HTMLElement).closest('[data-zoom-close]'))) closeZoom();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && veil.classList.contains('open')) closeZoom();
+      });
+      stage.addEventListener('wheel', (e) => {
+        if (!veil.classList.contains('open')) return;
+        e.preventDefault();
+        scale = Math.max(1, Math.min(4, scale - Math.sign(e.deltaY) * 0.25));
+        applyZoom();
+      }, { passive: false });
+      let dragging = false, px = 0, py = 0;
+      stage.addEventListener('pointerdown', (e) => { dragging = true; px = e.clientX; py = e.clientY; stage.setPointerCapture(e.pointerId); });
+      stage.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        tx += e.clientX - px; ty += e.clientY - py;
+        px = e.clientX; py = e.clientY;
+        applyZoom();
+      });
+      stage.addEventListener('pointerup', () => { dragging = false; });
+    </script>
+  </body>
+</html>
